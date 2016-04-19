@@ -9,9 +9,9 @@ export default {
     Dispatcher.handleViewAction({
       type: Constants.ActionTypes.SESSION_DESTROYED
     });
-    Dispatcher.handleServerAction({
+    /*Dispatcher.handleServerAction({
       type: Constants.ActionTypes.LOG_OUT
-    })
+    })*/
   }
 
 	

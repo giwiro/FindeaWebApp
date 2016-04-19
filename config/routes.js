@@ -38,7 +38,8 @@ module.exports.routes = {
   'post /login': 'AuthController.localStrategy',
 
 
-  'get /buscar': 'BuscarController.index' 
+  'get /buscar': 'BuscarController.index',
+  'get /buscarTest': 'BuscarController.buscarTest'
 
   /***************************************************************************
   *                                                                          *

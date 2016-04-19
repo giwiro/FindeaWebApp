@@ -33,6 +33,13 @@ export default class SessionNavElement extends React.Component{
 
   	const session = this.props.session
     let content;
+    let linkButtons = (
+      <Link to="/buscar" >
+        <IconButton style={searchIconStyle}>
+          <SearchIcon className="white" />
+        </IconButton>
+      </Link>
+    )
 
     if (!session) {
       content = (
@@ -50,12 +57,7 @@ export default class SessionNavElement extends React.Component{
 
     return (
       <div className="hidden-xs hidden-sm" style={warpperStyle}>
-        <Link to="/buscar" >
-          <IconButton style={searchIconStyle}>
-            <SearchIcon className="white" />
-          </IconButton>
-        </Link>
-        {/*<ToolbarSeparator />*/}
+        {linkButtons}
         {content}
       </div>
     )

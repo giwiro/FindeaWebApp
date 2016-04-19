@@ -2,8 +2,6 @@ import BaseStore from './BaseStore'
 import Dispatcher from '../Dispatcher';
 import Constants from '../Constants';
 
-import request from 'superagent'
-
 // data storage
 let _session = undefined;
 

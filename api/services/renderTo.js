@@ -9,17 +9,27 @@ module.exports = function(res, url, state) {
 
 	match({ routes: routes(state), location: url}, function (error, redirectLocation, renderProps) {
 
-
-		const initState = 'window.__ReactInitState__=' + JSON.stringify(state) + ';';
-
 		const str = renderToString(
 			<RouterContext {...renderProps} />
 		);
 
-		res.view('layout', {
-			initState,
-	    body: str
-    });
+		Uso.getAll(function (err, usos) {
+			if (!err) {
+				state.usos = usos;
+			}
+
+			const initState = 'window.__ReactInitState__=' + JSON.stringify(state) + ';';
+			
+			res.view('layout', {
+				initState,
+		    body: str
+	    });
+		});
+
+
+		
+
+		
 	});
 
   /*Router.run(routes, url, (Root) => {

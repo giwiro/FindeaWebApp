@@ -1,0 +1,38 @@
+.richmap{
+  width: 40%;
+  display: inline-block;
+  vertical-align: top;
+  position: fixed;
+
+  @media (max-width: @screen-sm-max) {
+    display: none;
+  }
+
+
+  @media (max-width: @screen-md-max) {
+    width: 40%;
+  }
+
+  @media (min-width: @screen-lg) {
+    width: 50%;
+  }
+
+}
+
+.map_menu_wrapper {
+	position: absolute;
+	top: 64px;
+	@media (max-width: @screen-xs-max) {
+    width: 100%;
+  }
+
+  .toolbarMenu {
+  	width: 392px;
+  	//margin: 8px;
+
+  	@media (max-width: @screen-xs-max) {
+	    width: 100%;
+	    margin: 0;
+	  }
+  }
+}

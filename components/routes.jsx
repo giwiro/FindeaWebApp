@@ -15,12 +15,13 @@ import {merge} from 'lodash'
 module.exports = (params) => {
 
 	const session = params.session
+	const espaciosBusqueda = params.espaciosBusqueda
 
 	return (
 		<Route path="/" component={App} session={session}>
 	  	<IndexRoute component={MainPage}/>
 	  	<Route path="login" component={LoginPage} />
-	  	<Route path="buscar" component={BuscarPage} />
+	  	<Route path="buscar" component={BuscarPage} espaciosBusqueda={espaciosBusqueda} />
 	  </Route>
 	)
 }
