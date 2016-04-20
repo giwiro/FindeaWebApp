@@ -31,7 +31,7 @@
     "grunt-sync": "0.2.4",
     "include-all": "~0.1.6",
     "keymirror": "^0.1.1",
-    "material-ui": "^0.15.0-alpha.2",
+    "material-ui": "0.15.0-alpha.2",
     "object-assign": "^4.0.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
