@@ -16,12 +16,13 @@ module.exports = (params) => {
 
 	const session = params.session
 	const espaciosBusqueda = params.espaciosBusqueda
+	const usos = params.usos
 
 	return (
 		<Route path="/" component={App} session={session}>
 	  	<IndexRoute component={MainPage}/>
 	  	<Route path="login" component={LoginPage} />
-	  	<Route path="buscar" component={BuscarPage} espaciosBusqueda={espaciosBusqueda} />
+	  	<Route path="buscar" component={BuscarPage} espaciosBusqueda={espaciosBusqueda} usos={usos} />
 	  </Route>
 	)
 }

@@ -39,7 +39,7 @@ module.exports.routes = {
 
 
   'get /buscar': 'BuscarController.index',
-  'get /buscarTest': 'BuscarController.buscarTest'
+  'post /buscar': 'BuscarController.buscar'
 
   /***************************************************************************
   *                                                                          *

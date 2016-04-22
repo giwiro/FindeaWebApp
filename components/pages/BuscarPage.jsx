@@ -14,11 +14,34 @@ export default class BuscarPage extends React.Component {
 	constructor(props) {
 		super(props);
 		EspaciosBusquedaStore.init(this.props.route.espaciosBusqueda);
-		this.state = {
-			espacios: EspaciosBusquedaStore.getEspacios(),
-      isLoading: false
-		}
+    let initialState = {
+      espacios: EspaciosBusquedaStore.getEspacios(),
+      center: EspaciosBusquedaStore.getCenter(),
+      viewport: EspaciosBusquedaStore.getViewport(),
+      isLoading: false,
+      usos: this.props.route.usos
+    }
+    let { query } = this.props.location;
+
+    if (query.direccion) {
+      initialState.direccion = query.direccion
+    }
+
+    if (query.uso) {
+      const isValidUso = _.some(this.props.route.usos, {
+        nombre: query.uso
+      })
+      if (isValidUso) {
+        initialState.uso = query.uso
+      }
+    }
+
+		this.state = initialState;
+
+    this._searchPlaces = this._searchPlaces.bind(this);
 		this._onChange = this._onChange.bind(this);
+    this._changeMapCenter = this._changeMapCenter.bind(this);
+    this._changeMapCenterSearch = this._changeMapCenterSearch.bind(this);
     this._changeUso = this._changeUso.bind(this);
     this._changeDireccion = this._changeDireccion.bind(this)
 
@@ -27,26 +50,51 @@ export default class BuscarPage extends React.Component {
 	_onChange() {
 		const espacios = EspaciosBusquedaStore.getEspacios();
     const isLoading = EspaciosBusquedaStore.isLoading();
+    const center = EspaciosBusquedaStore.getCenter();
+    const viewport = EspaciosBusquedaStore.getViewport();
 
-    console.log('changed->espacios', espacios);
+    /*console.log('changed->espacios', espacios);
     console.log('changed->isLoading', isLoading);
+    console.log('changed->center', center);
+    console.log('changed->viewport', viewport);*/
 
     this.setState({
     	espacios: espacios,
-      isLoading: isLoading
+      isLoading: isLoading,
+      center: center,
+      viewport: viewport
     });
   }
 
-  _searchPlaces() {
-    EspaciosBusquedaActionCreator.searchPlaces()
+  _searchPlaces(direccion) {
+    EspaciosBusquedaActionCreator.searchPlaces({
+      direccion: direccion,
+      uso: this.state.uso
+    })
+
+    this._changeDireccion(direccion)
+  }
+
+  _changeMapCenter(newCenter) {
+    EspaciosBusquedaStore.setCenter(newCenter);
+    /*this.setState({
+      center: newCenter
+    })*/
+  }
+
+  _changeMapCenterSearch(center, radius) {
+    EspaciosBusquedaActionCreator.searchPlaces({
+      center: center,
+      radius: radius
+    })
   }
 
   _changeDireccion(value) {
     if (window.history.pushState) {
-      var newurl = URI(document.URL).query({direccion: value}).toString();
+      var newurl = URI(document.URL).query(_.merge(this.props.location.query, {direccion: value})).toString();
       window.history.pushState({path: newurl},'',newurl);
     }
-    console.log(document.URL, URI(document.URL).query({uso: value}).toString())
+    //console.log(document.URL, URI(document.URL).query(_.merge(this.props.location.query, {direccion: value})).toString())
   }
 
   _changeUso(event, index, value) {
@@ -56,41 +104,27 @@ export default class BuscarPage extends React.Component {
     //_.merge(this.props.location.query, {uso: value})
 
     if (window.history.pushState) {
-      var newurl = URI(document.URL).query({uso: value}).toString();
+      var newurl = URI(document.URL).query(_.merge(this.props.location.query, {uso: value})).toString();
       window.history.pushState({path:newurl},'',newurl);
     }
-    console.log(document.URL, URI(document.URL).query({uso: value}).toString())
+    //console.log(document.URL, URI(document.URL).query(_.merge(this.props.location.query, {uso: value})).toString())
   }
 
   componentDidMount() {
+    //console.log('BuscarPage Did Mount');
     EspaciosBusquedaStore.addChangeListener(this._onChange);
-    let { query } = this.props.location;
-    if (window.__ReactInitState__) {
+    /*if (window.__ReactInitState__) {
       console.log('querys', query);
-      let initialState = {
-        usos: []
-      };
+      let initialState = {};
 
-      if (query.direccion) {
-        initialState.direccion = query.direccion
-      }
-
-      if (query.uso) {
-        const isValidUso = _.some(window.__ReactInitState__.usos, {
-          nombre: query.uso
-        })
-        if (isValidUso) {
-          initialState.uso = query.uso
-        }
-      }
 
       if (window.__ReactInitState__.usos) {
         initialState.usos = window.__ReactInitState__.usos;
       }
-
+      console.log('initialState', initialState);
       this.setState(initialState)
       
-    }
+    }*/
     
   }
 
@@ -101,8 +135,14 @@ export default class BuscarPage extends React.Component {
   render() {
     return (
     	<div>
-    		<RichMap markers={this.state.espacios}/>
-        <BuscarMenu 
+    		<RichMap 
+          viewport={this.state.viewport}
+          center={this.state.center}
+          markers={this.state.espacios}
+          _changeMapCenter={this._changeMapCenter}
+          _changeMapCenterSearch={this._changeMapCenterSearch}/>
+        <BuscarMenu
+          espacios={this.state.espacios}
           searchPlaces={this._searchPlaces} 
           isLoading={this.state.isLoading} 
           usos={this.state.usos}

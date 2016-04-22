@@ -2,16 +2,16 @@
 
 import React from 'react'
 import {Link} from 'react-router'
+import CaculateDistance from '../../api/services/calculateDistanceBetween'
 import {RaisedButton, IconButton, ToolbarSeparator, CircularProgress} from 'material-ui';
-import {GoogleMapLoader, GoogleMap, Marker } from "react-google-maps";
-import NodeGeoCoder from 'node-geocoder'
+import {GoogleMapLoader, GoogleMap, Marker} from "react-google-maps";
 
 import {default as ScriptjsLoader} from "react-google-maps/lib/async/ScriptjsLoader";
 import $ from "jquery";
 
-const geocoder = NodeGeoCoder('google', 'https');
-
 const toolbarHeight = 64;
+let timeoutToSearch;
+let skipViewportFitBound = false;
 
 export default class RichMap extends React.Component{  
 
@@ -19,15 +19,13 @@ export default class RichMap extends React.Component{
     super(props);
     this.state = {
       open: false,
-      height: 400,
-      mapCenter: {
-        lat: -9.189966999999998, 
-        lng: -75.015152
-      }
+      height: 400
     };
-    this.initMap = this.initMap.bind(this)
-    this.changeMapCenter = this.changeMapCenter.bind(this)
+    //this.initMap = this.initMap.bind(this)
     this.resize = this.resize.bind(this)
+    this.handleDragSearch = this.handleDragSearch.bind(this)
+    this.handleDragStart = this.handleDragStart.bind(this)
+    this.handleZoomChanged = this.handleZoomChanged.bind(this)
   }
 
   componentDidMount() {
@@ -36,6 +34,38 @@ export default class RichMap extends React.Component{
     $(window).resize(function() {
       thiz.resize();
     });
+    console.log(this.refs.map);
+  }
+
+  componentDidUpdate() {
+
+    if (skipViewportFitBound)
+      return true; 
+    const map = this.refs.map;
+
+    if (!map)
+      return false;
+    const center = map.getCenter();
+    const viewport = this.props.viewport;
+
+    /*console.log({
+        lat: center.lat(),
+        lng: center.lng()
+      }, viewport)*/
+
+    if (!map || !viewport)
+      return true
+
+    var bounds = new google.maps.LatLngBounds();
+
+    bounds.extend(new google.maps.LatLng(
+        viewport.northeast.lat, viewport.northeast.lng));
+
+    bounds.extend(new google.maps.LatLng(
+        viewport.southwest.lat, viewport.southwest.lng));
+
+    map.fitBounds(bounds);
+
   }
 
   componentWillUnmount() {
@@ -49,16 +79,69 @@ export default class RichMap extends React.Component{
     })
   }
 
-  changeMapCenter(newCenter) {
-    this.setState({
-      mapCenter: newCenter
-    })
+  handleZoomChanged() {
+    console.log('zoom changed');
   }
 
-  initMap(map) {
-    console.log('map', map);
-    console.log('google', google);
+  handleDragStart() {
+    clearTimeout(timeoutToSearch);
+    skipViewportFitBound = true;
   }
+
+  handleDragSearch() {
+
+    const map = this.refs.map; 
+
+    /*console.log('dragged to', {
+      lat: map.getCenter().lat(),
+      lng: map.getCenter().lng()
+    });*/
+
+    this.props._changeMapCenter({
+      lat: map.getCenter().lat(),
+      lng: map.getCenter().lng()
+    });
+
+    clearTimeout(timeoutToSearch);
+    const that = this;
+    timeoutToSearch = setTimeout(() => {
+      const center = map.getCenter();
+
+      const lat0 = map.getBounds().getNorthEast().lat();
+      const lng0 = map.getBounds().getNorthEast().lng();
+
+      /*console.log('bound',{
+        lat: lat0,
+        lng: lng0
+      });*/
+
+      /*var bounds2 = map.getBounds();
+      var center2 = map.getCenter();
+      if (bounds2 && center2) {
+        var ne = bounds2.getNorthEast();
+        // Calculate radius (in meters).
+        var radius2 = google.maps.geometry.spherical.computeDistanceBetween(center, ne);
+        //console.log('radius2', radius2/1000);
+      }*/
+
+      const radius = Math.floor(CaculateDistance(lat0, lng0, center.lat(), center.lng(), 'K') * 100)/100;
+
+      that.props._changeMapCenterSearch({
+        lat: center.lat(),
+        lng: center.lng()
+      }, radius);
+
+      skipViewportFitBound = false;
+    }, 500)
+    
+  }
+
+  
+
+  /*initMap(map) {
+    console.log('map.fitBounds', map.fitBounds);
+    console.log('google', google);
+  }*/
 
   render() {
 
@@ -71,8 +154,8 @@ export default class RichMap extends React.Component{
           const props = {
             key: marker._id,
             position: {
-              lat: marker.location.coordinates[0],
-              lng: marker.location.coordinates[1]
+              lat: marker.location.coordinates[1],
+              lng: marker.location.coordinates[0]
             }
           }
           return (
@@ -101,11 +184,13 @@ export default class RichMap extends React.Component{
           }
           googleMapElement={
             <GoogleMap
-              ref={this.initMap}
-              defaultZoom={4}
+              ref="map"
+              defaultZoom={5}
               mapTypeId={"roadmap"}
-              defaultCenter={{lat: -9.189966999999998, lng: -75.015152}} 
-              center={this.state.mapCenter}>
+              center={this.props.center}
+              onZoomChanged={this.handleZoomChanged}
+              onDragstart={this.handleDragStart}
+              onDragend={this.handleDragSearch}>
               {markers}
             </GoogleMap>
           } />

@@ -5,10 +5,11 @@ import Constants from '../Constants';
 
 export default {
 
-  searchPlaces(someData) {
-  	console.log('searchPlaces, executing with thie data:', someData);
+  searchPlaces(data) {
+  	console.log('searchPlaces, executing with thie data:', data);
     Dispatcher.handleViewAction({
-      type: Constants.ActionTypes.PLACES_SEARCHED
+      type: Constants.ActionTypes.PLACES_SEARCHED,
+      data: data
     });
     /*Dispatcher.handleServerAction({
       type: Constants.ActionTypes.LOG_OUT

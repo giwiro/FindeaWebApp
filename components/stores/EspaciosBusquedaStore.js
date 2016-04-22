@@ -4,15 +4,30 @@ import Constants from '../Constants'
 
 import request from 'superagent'
 
-let _espacios = undefined;
+let initialized = false;
+let _espacios = [];
 let _isLoading = false;
+let _center = {
+  lat: -9.189966999999998, 
+  lng: -75.015152
+}
+let _viewport = undefined;
 
 class EspaciosBusquedaStore extends BaseStore {
 
 	init(espacios) {
-    if (!espacios)
+    if (!espacios || initialized)
       return false;
     _espacios = espacios
+    initialized = true
+  }
+
+  getViewport() {
+    return _viewport
+  }
+
+  getCenter() {
+    return _center
   }
 
   getEspacios() {
@@ -21,6 +36,14 @@ class EspaciosBusquedaStore extends BaseStore {
 
   isLoading() {
     return _isLoading
+  }
+
+  setViewport(newViewport) {
+    _viewport = newViewport
+  }
+
+  setCenter(newCenter) {
+    _center = newCenter
   }
 
   setEspacios(espacios) {
@@ -44,7 +67,7 @@ Dispatcher.register( (payload) => {
 
   switch (action.type) {
   case Constants.ActionTypes.PLACES_SEARCHED:
-    console.log('PLACES_SEARCHED');
+    console.log('PLACES_SEARCHED', payload);
     // NOTE: if this action needs to wait on another store:
     // Dispatcher.waitFor([OtherStore.dispatchToken]);
     // For details, see: http://facebook.github.io/react/blog/2014/07/30/flux-actions-and-the-dispatcher.html#why-we-need-a-dispatcher
@@ -53,11 +76,27 @@ Dispatcher.register( (payload) => {
     espaciosBusquedaStore.beginLoad();
     espaciosBusquedaStore.emitChange();
 
-    setTimeout(() => {
-      espaciosBusquedaStore.finishLoad();
-      espaciosBusquedaStore.setEspacios(undefined);
-      espaciosBusquedaStore.emitChange();
-    }, 2000);
+    request
+      .post('/buscar')
+      .send(action.data)
+      .end((err, res) => {
+        if (err || !res.ok) {
+          console.error(err);
+        }else{
+          console.log('Ajax /buscar',res.body);
+
+          espaciosBusquedaStore.setEspacios(res.body.espacios);
+
+          //if (res.body.viewport)
+            espaciosBusquedaStore.setViewport(res.body.viewport);
+
+          if (res.body.center)
+            espaciosBusquedaStore.setCenter(res.body.center);
+        }
+
+        espaciosBusquedaStore.finishLoad();
+        espaciosBusquedaStore.emitChange();
+      });
 
     break;
   /*case Constants.ActionTypes.LOG_OUT:
