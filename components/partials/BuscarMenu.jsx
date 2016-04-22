@@ -8,17 +8,31 @@ import {
   SelectField,
 	MenuItem,
   TextField,
-  CircularProgress} from 'material-ui';
+  CircularProgress,
+  IconButton} from 'material-ui';
+import SendIcon from 'material-ui/lib/svg-icons/content/send'
 
+const labelStyle = {
+  color: 'rgba(0,0,0,.55)'
+}
 const selectStyle = {
-	width: '100%',
-	color: 'rgba(0,0,0,.87)'
+  width: '100%'
+  
+}
+
+const textFieldStyle = {
+  width: '100%'
 }
 
 const loaderStyle = {
   marginTop: '60px'
 }
 
+const searchButtonStyle = {
+  position: 'absolute',
+  right: '15px',
+  marginTop: '25px'
+}
 let timeoutSearch;
 
 export default class BuscarMenu extends React.Component{
@@ -31,6 +45,7 @@ export default class BuscarMenu extends React.Component{
 
     this._onEnter = this._onEnter.bind(this)
     this._onChangeSelect = this._onChangeSelect.bind(this)
+    this.search = this.search.bind(this)
     //this._onChangeText = this._onChangeText.bind(this)
   }
 
@@ -42,6 +57,13 @@ export default class BuscarMenu extends React.Component{
       that.props.searchPlaces(direccion)
     }, 1500); 
   }*/
+
+  search() {
+    clearTimeout(timeoutSearch);
+    const direccion = this.refs.direccion.getValue()
+    if (direccion) 
+      this.props.searchPlaces(direccion)
+  }
 
   _onChangeSelect(event, index, value) {
     
@@ -88,6 +110,7 @@ export default class BuscarMenu extends React.Component{
 		      	<SelectField
               disabled={this.props.isLoading} 
               ref="uso"
+              floatingLabelStyle={labelStyle}
 		      		style={selectStyle}
 		      		floatingLabelText="¿ Para qué voy a usar el espacio ?"
 		      		value={this.props.uso} 
@@ -102,10 +125,14 @@ export default class BuscarMenu extends React.Component{
             <TextField
               ref="direccion"
               disabled={this.props.isLoading}
-              style={selectStyle}
+              floatingLabelStyle={labelStyle}
+              style={textFieldStyle}
               defaultValue={this.props.direccion}
               onKeyDown={this._onEnter}
               floatingLabelText="¿ Dónde deseas realizar el evento ?" />
+              <IconButton style={searchButtonStyle} onTouchTap={this.search} disabled={this.props.isLoading} >
+                <SendIcon className="searchSpaceIcon grey" />
+              </IconButton>
           </div>
 	      </div>
         <div className="buscarResults">

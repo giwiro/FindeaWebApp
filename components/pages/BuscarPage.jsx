@@ -113,6 +113,15 @@ export default class BuscarPage extends React.Component {
   componentDidMount() {
     //console.log('BuscarPage Did Mount');
     EspaciosBusquedaStore.addChangeListener(this._onChange);
+    let viewport = undefined;
+    if (this.props.location.query.direccion && window.__ReactInitState__.viewport) {
+      viewport = window.__ReactInitState__.viewport
+    }
+
+    EspaciosBusquedaStore.setViewport(viewport);
+    this.setState({
+      viewport: viewport
+    })
     /*if (window.__ReactInitState__) {
       console.log('querys', query);
       let initialState = {};

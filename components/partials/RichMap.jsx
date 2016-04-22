@@ -12,6 +12,7 @@ import $ from "jquery";
 const toolbarHeight = 64;
 let timeoutToSearch;
 let skipViewportFitBound = false;
+let _googleMapComponent;
 
 export default class RichMap extends React.Component{  
 
@@ -21,11 +22,23 @@ export default class RichMap extends React.Component{
       open: false,
       height: 400
     };
-    //this.initMap = this.initMap.bind(this)
+    this.initMap = this.initMap.bind(this)
     this.resize = this.resize.bind(this)
     this.handleDragSearch = this.handleDragSearch.bind(this)
     this.handleDragStart = this.handleDragStart.bind(this)
     this.handleZoomChanged = this.handleZoomChanged.bind(this)
+  }
+
+  _buildBounds(viewport) {
+    var bounds = new google.maps.LatLngBounds();
+
+    bounds.extend(new google.maps.LatLng(
+        viewport.northeast.lat, viewport.northeast.lng));
+
+    bounds.extend(new google.maps.LatLng(
+        viewport.southwest.lat, viewport.southwest.lng));
+
+    return bounds
   }
 
   componentDidMount() {
@@ -34,14 +47,13 @@ export default class RichMap extends React.Component{
     $(window).resize(function() {
       thiz.resize();
     });
-    console.log(this.refs.map);
   }
 
   componentDidUpdate() {
 
     if (skipViewportFitBound)
       return true; 
-    const map = this.refs.map;
+    const map = this._googleMapComponent;
 
     if (!map)
       return false;
@@ -56,15 +68,9 @@ export default class RichMap extends React.Component{
     if (!map || !viewport)
       return true
 
-    var bounds = new google.maps.LatLngBounds();
+    
 
-    bounds.extend(new google.maps.LatLng(
-        viewport.northeast.lat, viewport.northeast.lng));
-
-    bounds.extend(new google.maps.LatLng(
-        viewport.southwest.lat, viewport.southwest.lng));
-
-    map.fitBounds(bounds);
+    map.fitBounds(this._buildBounds(viewport));
 
   }
 
@@ -90,7 +96,7 @@ export default class RichMap extends React.Component{
 
   handleDragSearch() {
 
-    const map = this.refs.map; 
+    const map = this._googleMapComponent; 
 
     /*console.log('dragged to', {
       lat: map.getCenter().lat(),
@@ -138,10 +144,14 @@ export default class RichMap extends React.Component{
 
   
 
-  /*initMap(map) {
-    console.log('map.fitBounds', map.fitBounds);
-    console.log('google', google);
-  }*/
+  initMap(map) {
+    this._googleMapComponent = map
+    console.log('map inited', this.props.viewport);
+
+    if (this.props.viewport && map)
+      map.fitBounds(this._buildBounds(this.props.viewport));
+
+  }
 
   render() {
 
@@ -153,6 +163,7 @@ export default class RichMap extends React.Component{
           //console.log('marker', marker);
           const props = {
             key: marker._id,
+            icon: '/images/icon_mini.png',
             position: {
               lat: marker.location.coordinates[1],
               lng: marker.location.coordinates[0]
@@ -184,7 +195,7 @@ export default class RichMap extends React.Component{
           }
           googleMapElement={
             <GoogleMap
-              ref="map"
+              ref={this.initMap}
               defaultZoom={5}
               mapTypeId={"roadmap"}
               center={this.props.center}

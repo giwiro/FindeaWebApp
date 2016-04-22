@@ -13,7 +13,8 @@ export default class BusquedaResultados extends React.Component{
     let content = [];
 
     const messageStyle = {
-      textAlign: 'center'
+      textAlign: 'center',
+      fontFamily: 'Roboto,"Helvetica Neue",sans-serif'
     }
 
     if (!this.props.espacios || this.props.espacios.length <= 0) {

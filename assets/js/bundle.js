@@ -537,6 +537,15 @@ var BuscarPage = function (_React$Component) {
     value: function componentDidMount() {
       //console.log('BuscarPage Did Mount');
       _EspaciosBusquedaStore2.default.addChangeListener(this._onChange);
+      var viewport = undefined;
+      if (this.props.location.query.direccion && window.__ReactInitState__.viewport) {
+        viewport = window.__ReactInitState__.viewport;
+      }
+
+      _EspaciosBusquedaStore2.default.setViewport(viewport);
+      this.setState({
+        viewport: viewport
+      });
       /*if (window.__ReactInitState__) {
         console.log('querys', query);
         let initialState = {};
@@ -715,6 +724,10 @@ var _BusquedaResultados2 = _interopRequireDefault(_BusquedaResultados);
 
 var _materialUi = require('material-ui');
 
+var _send = require('material-ui/lib/svg-icons/content/send');
+
+var _send2 = _interopRequireDefault(_send);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -723,15 +736,27 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var labelStyle = {
+  color: 'rgba(0,0,0,.55)'
+};
 var selectStyle = {
-  width: '100%',
-  color: 'rgba(0,0,0,.87)'
+  width: '100%'
+
+};
+
+var textFieldStyle = {
+  width: '100%'
 };
 
 var loaderStyle = {
   marginTop: '60px'
 };
 
+var searchButtonStyle = {
+  position: 'absolute',
+  right: '15px',
+  marginTop: '25px'
+};
 var timeoutSearch = void 0;
 
 var BuscarMenu = function (_React$Component) {
@@ -748,6 +773,7 @@ var BuscarMenu = function (_React$Component) {
 
     _this._onEnter = _this._onEnter.bind(_this);
     _this._onChangeSelect = _this._onChangeSelect.bind(_this);
+    _this.search = _this.search.bind(_this);
     //this._onChangeText = this._onChangeText.bind(this)
     return _this;
   }
@@ -762,6 +788,13 @@ var BuscarMenu = function (_React$Component) {
   }*/
 
   _createClass(BuscarMenu, [{
+    key: 'search',
+    value: function search() {
+      clearTimeout(timeoutSearch);
+      var direccion = this.refs.direccion.getValue();
+      if (direccion) this.props.searchPlaces(direccion);
+    }
+  }, {
     key: '_onChangeSelect',
     value: function _onChangeSelect(event, index, value) {
 
@@ -814,6 +847,7 @@ var BuscarMenu = function (_React$Component) {
               {
                 disabled: this.props.isLoading,
                 ref: 'uso',
+                floatingLabelStyle: labelStyle,
                 style: selectStyle,
                 floatingLabelText: '¿ Para qué voy a usar el espacio ?',
                 value: this.props.uso,
@@ -830,10 +864,16 @@ var BuscarMenu = function (_React$Component) {
             _react2.default.createElement(_materialUi.TextField, {
               ref: 'direccion',
               disabled: this.props.isLoading,
-              style: selectStyle,
+              floatingLabelStyle: labelStyle,
+              style: textFieldStyle,
               defaultValue: this.props.direccion,
               onKeyDown: this._onEnter,
-              floatingLabelText: '¿ Dónde deseas realizar el evento ?' })
+              floatingLabelText: '¿ Dónde deseas realizar el evento ?' }),
+            _react2.default.createElement(
+              _materialUi.IconButton,
+              { style: searchButtonStyle, onTouchTap: this.search, disabled: this.props.isLoading },
+              _react2.default.createElement(_send2.default, { className: 'searchSpaceIcon grey' })
+            )
           )
         ),
         _react2.default.createElement(
@@ -850,7 +890,7 @@ var BuscarMenu = function (_React$Component) {
 
 exports.default = BuscarMenu;
 
-},{"./BusquedaResultados.jsx":12,"lodash":99,"material-ui":155,"react":520,"react-router":347}],12:[function(require,module,exports){
+},{"./BusquedaResultados.jsx":12,"lodash":99,"material-ui":155,"material-ui/lib/svg-icons/content/send":204,"react":520,"react-router":347}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -891,7 +931,8 @@ var BusquedaResultados = function (_React$Component) {
       var content = [];
 
       var messageStyle = {
-        textAlign: 'center'
+        textAlign: 'center',
+        fontFamily: 'Roboto,"Helvetica Neue",sans-serif'
       };
 
       if (!this.props.espacios || this.props.espacios.length <= 0) {
@@ -1307,6 +1348,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var toolbarHeight = 64;
 var timeoutToSearch = void 0;
 var skipViewportFitBound = false;
+var _googleMapComponent = void 0;
 
 var RichMap = function (_React$Component) {
   _inherits(RichMap, _React$Component);
@@ -1320,7 +1362,7 @@ var RichMap = function (_React$Component) {
       open: false,
       height: 400
     };
-    //this.initMap = this.initMap.bind(this)
+    _this.initMap = _this.initMap.bind(_this);
     _this.resize = _this.resize.bind(_this);
     _this.handleDragSearch = _this.handleDragSearch.bind(_this);
     _this.handleDragStart = _this.handleDragStart.bind(_this);
@@ -1329,6 +1371,17 @@ var RichMap = function (_React$Component) {
   }
 
   _createClass(RichMap, [{
+    key: '_buildBounds',
+    value: function _buildBounds(viewport) {
+      var bounds = new google.maps.LatLngBounds();
+
+      bounds.extend(new google.maps.LatLng(viewport.northeast.lat, viewport.northeast.lng));
+
+      bounds.extend(new google.maps.LatLng(viewport.southwest.lat, viewport.southwest.lng));
+
+      return bounds;
+    }
+  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       var thiz = this;
@@ -1336,14 +1389,13 @@ var RichMap = function (_React$Component) {
       (0, _jquery2.default)(window).resize(function () {
         thiz.resize();
       });
-      console.log(this.refs.map);
     }
   }, {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
 
       if (skipViewportFitBound) return true;
-      var map = this.refs.map;
+      var map = this._googleMapComponent;
 
       if (!map) return false;
       var center = map.getCenter();
@@ -1356,13 +1408,7 @@ var RichMap = function (_React$Component) {
 
       if (!map || !viewport) return true;
 
-      var bounds = new google.maps.LatLngBounds();
-
-      bounds.extend(new google.maps.LatLng(viewport.northeast.lat, viewport.northeast.lng));
-
-      bounds.extend(new google.maps.LatLng(viewport.southwest.lat, viewport.southwest.lng));
-
-      map.fitBounds(bounds);
+      map.fitBounds(this._buildBounds(viewport));
     }
   }, {
     key: 'componentWillUnmount',
@@ -1379,7 +1425,9 @@ var RichMap = function (_React$Component) {
     }
   }, {
     key: 'handleZoomChanged',
-    value: function handleZoomChanged() {}
+    value: function handleZoomChanged() {
+      console.log('zoom changed');
+    }
   }, {
     key: 'handleDragStart',
     value: function handleDragStart() {
@@ -1390,7 +1438,7 @@ var RichMap = function (_React$Component) {
     key: 'handleDragSearch',
     value: function handleDragSearch() {
 
-      var map = this.refs.map;
+      var map = this._googleMapComponent;
 
       /*console.log('dragged to', {
         lat: map.getCenter().lat(),
@@ -1434,12 +1482,14 @@ var RichMap = function (_React$Component) {
         skipViewportFitBound = false;
       }, 500);
     }
+  }, {
+    key: 'initMap',
+    value: function initMap(map) {
+      this._googleMapComponent = map;
+      console.log('map inited', this.props.viewport);
 
-    /*initMap(map) {
-      console.log('map.fitBounds', map.fitBounds);
-      console.log('google', google);
-    }*/
-
+      if (this.props.viewport && map) map.fitBounds(this._buildBounds(this.props.viewport));
+    }
   }, {
     key: 'render',
     value: function render() {
@@ -1451,6 +1501,7 @@ var RichMap = function (_React$Component) {
           //console.log('marker', marker);
           var props = {
             key: marker._id,
+            icon: '/images/icon_mini.png',
             position: {
               lat: marker.location.coordinates[1],
               lng: marker.location.coordinates[0]
@@ -1475,7 +1526,7 @@ var RichMap = function (_React$Component) {
           googleMapElement: _react2.default.createElement(
             _reactGoogleMaps.GoogleMap,
             {
-              ref: 'map',
+              ref: this.initMap,
               defaultZoom: 5,
               mapTypeId: "roadmap",
               center: this.props.center,
