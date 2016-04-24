@@ -53,6 +53,10 @@ const lightMuiTheme = getMuiTheme({
   	userAgent: 'all',
 	});
 
+const childWrapStyle = {
+	paddingTop: '64px'
+}
+
 
 class App extends React.Component{
 
@@ -105,7 +109,7 @@ class App extends React.Component{
   	return (
   		<div>
 				<Nav session={this.state.session} userType={this.state.userType} _goTo={this._goTo}/>
-				{this.props.children}
+				<div style={childWrapStyle}>{this.props.children}</div>
 			</div>
   	);
   }

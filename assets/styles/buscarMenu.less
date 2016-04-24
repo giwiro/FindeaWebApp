@@ -1,0 +1,114 @@
+.buscarMenu{
+	width: 100%;
+	display: inline-block;
+	/*margin-left: 50%; */
+  vertical-align: top;
+
+  @media (min-width: @screen-xs) {
+    width: 100%;
+    margin-left: 0; 
+  }
+
+  @media (min-width: @screen-md) {
+    width: 60%;
+    margin-left: 40%; 
+  }
+
+  @media (min-width: @screen-xl) {
+    width: 50%;
+    margin-left: 50%; 
+  }
+
+  .buscarOptions {
+  	.optionSection{
+  		padding: 0 20px 0px 20px;
+  	}
+  }
+
+}
+
+.buscarResults{
+  padding: 20px;
+  text-align: center;
+}
+
+.media-cover {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.box_price{
+  position: absolute;
+  text-decoration: none;
+  bottom: 0px;
+  right: 0;
+  background-color: rgb(0, 0, 0);
+  /* RGBa with 0.6 opacity */
+  background-color: rgba(0, 0, 0, 0.8);
+  /* For IE 5.5 - 7*/
+  //filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
+  /* For IE 8*/
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
+  padding: 0 15px;
+  z-index: 2;
+}
+
+.box_price p span{
+  color: #fff;
+  font-weight: 500;
+  font-family: Roboto, sans-serif;
+}
+.box_price span.price_value span{
+  color:#009688;
+  font-weight: 600;
+}
+
+.place_box {
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+  background-color: #ddd;
+  border-bottom: 6px solid #009688;
+  box-sizing: content-box;
+  transition:.6s;
+  cursor: pointer;
+  margin: 5px 1% 15px 1%;
+  //margin-bottom: 15px;
+  display: inline-block;
+
+
+  @media (min-width: @screen-xs) {
+    width: 100%;
+  }
+
+  @media (min-width: @screen-sm) {
+    width: 48%;
+  }
+
+  .panel-image{
+    position: relative;
+  }
+
+  .listing-img { 
+    overflow: hidden;
+    padding-bottom: 67%;
+
+    .listing-img-container {
+      z-index: 1;
+
+      img.img-responsive-height {
+        width: auto;
+        height: 100%;
+        vertical-align: middle;
+      }
+    }
+  }
+}
+
+.place_box:hover{
+  background-color: #ddd;
+  border-bottom: 6px solid #333;
+}

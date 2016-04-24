@@ -41,7 +41,8 @@ module.exports.routes = {
   'get /login/facebook/callback': 'AuthController.facebookCallback',
 
 
-  'get /buscar': 'BuscarController.index' 
+  'get /buscar': 'BuscarController.index',
+  'post /buscar': 'BuscarController.buscar'
 
   /***************************************************************************
   *                                                                          *

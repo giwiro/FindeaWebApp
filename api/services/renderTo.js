@@ -6,21 +6,27 @@ import routes from '../../components/routes.jsx'
 
 
 module.exports = function(res, url, state) {
+	Uso.getAll(function (err, usos) {
+		if (!err) {
+			state.usos = usos;
+		}
 
-	match({ routes: routes(state), location: url}, function (error, redirectLocation, renderProps) {
+		match({ routes: routes(state), location: url}, function (error, redirectLocation, renderProps) {
+			const str = renderToString(
+				<RouterContext {...renderProps} />
+			);
 
+			const initState = 'window.__ReactInitState__=' + JSON.stringify(state) + ';';
+			
+			res.view('layout', {
+				initState,
+		    body: str
+	    });		
+		});
 
-		const initState = 'window.__ReactInitState__=' + JSON.stringify(state) + ';';
-
-		const str = renderToString(
-			<RouterContext {...renderProps} />
-		);
-
-		res.view('layout', {
-			initState,
-	    body: str
-    });
 	});
+
+	
 
   /*Router.run(routes, url, (Root) => {
     if (state)

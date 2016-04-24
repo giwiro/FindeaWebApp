@@ -17,6 +17,12 @@ const burgerStyle = {
   paddingLeft: 0
 }
 
+const wrapperStyle = {
+  position: 'fixed',
+  width: '100%',
+  zIndex: '9999'
+}
+
 export default class Nav extends React.Component{
 
   constructor(props) {
@@ -38,7 +44,7 @@ export default class Nav extends React.Component{
     const session = this.props.session
     
     return (
-        <div>
+        <div style={wrapperStyle}>
           <Toolbar>
             <ToolbarGroup first={true}>
               <IconButton style={burgerStyle} className="visible-xs visible-sm" onTouchTap={this.handleToggle}>
