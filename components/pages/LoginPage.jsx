@@ -182,7 +182,7 @@ export default class LoginPage extends React.Component {
 
           <Card style={cardStyle} className="help_card">
           
-            <span className="hidden-xs hidden-sm" style={helperSubtitle}>Puedes iniciar con redes sociales</span>
+            <span className="hidden-xs" style={helperSubtitle}>Puedes iniciar con redes sociales</span>
             <FlatButton 
               style={socialButton}
               className="socialButton"

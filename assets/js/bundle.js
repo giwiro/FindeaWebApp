@@ -613,7 +613,7 @@ var LoginPage = function (_React$Component) {
           { style: cardStyle, className: 'help_card' },
           _react2.default.createElement(
             'span',
-            { className: 'hidden-xs hidden-sm', style: helperSubtitle },
+            { className: 'hidden-xs', style: helperSubtitle },
             'Puedes iniciar con redes sociales'
           ),
           _react2.default.createElement(_flatButton2.default, {
