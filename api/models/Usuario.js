@@ -21,8 +21,12 @@ module.exports = {
 			facebook: {
 				id: String,
 				token: String,
+        emails: [String],
 				email: String,
-				name: String
+				name: String,
+        first_name: String,
+        last_name: String,
+        photo: String
 			},
 
 			linkedin: {
@@ -88,15 +92,18 @@ module.exports = {
 
 
     // Find by email
-
     newSchema.static('findByEmail', function (email, cb) {
     	return this.findOne({'perfil_individual.email' : email}, cb);
     })
 
     //Find by FB id
-
     newSchema.static('findByFBid', function (fbid, cb) {
       return this.findOne({'perfil_individual.facebook.id' : fbid}, cb);
+    })
+
+    //Find if any email matches
+    newSchema.static('findByEmails', function (emailArray, cb) {
+      return this.find({'perfil_individual.email' : {$in: emailArray}}, cb);
     })
 
     // Or we might want to define an instance method:

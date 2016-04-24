@@ -62,10 +62,12 @@ class App extends React.Component{
 		  muiTheme: PropTypes.object.isRequired
 		}
 
-		SessionStore.init(this.props.route.session);
+		SessionStore.init(
+			this.props.route.session, this.props.route.userType);
 		
 		this.state = {
-			session: SessionStore.getSession()
+			session: SessionStore.getSession(),
+			userType: SessionStore.getUserType()
 		}
 
 		this._onChange = this._onChange.bind(this);
@@ -77,9 +79,11 @@ class App extends React.Component{
 
 	_onChange() {
 		const session = SessionStore.getSession();
+		const userType = SessionStore.getUserType();
 
     this.setState({
-    	session: session
+    	session: session,
+    	userType: userType
     });
   }
 
@@ -100,7 +104,7 @@ class App extends React.Component{
   render() {
   	return (
   		<div>
-				<Nav session={this.state.session} _goTo={this._goTo}/>
+				<Nav session={this.state.session} userType={this.state.userType} _goTo={this._goTo}/>
 				{this.props.children}
 			</div>
   	);

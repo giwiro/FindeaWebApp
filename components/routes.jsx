@@ -15,9 +15,10 @@ import {merge} from 'lodash'
 module.exports = (params) => {
 
 	const session = params.session
+	const userType = params.userType
 
 	return (
-		<Route path="/" component={App} session={session}>
+		<Route path="/" component={App} session={session} userType={userType}>
 	  	<IndexRoute component={MainPage}/>
 	  	<Route path="login" component={LoginPage} />
 	  	<Route path="buscar" component={BuscarPage} />

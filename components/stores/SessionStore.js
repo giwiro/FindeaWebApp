@@ -6,21 +6,28 @@ import request from 'superagent'
 
 // data storage
 let _session = undefined;
+let _userType = undefined;
 
 class SessionStore extends BaseStore {
 
-  init(session) {
+  init(session, userType) {
     if (!session)
       return false;
     _session = session
+    _userType = userType
   }
 
 	getSession() {
 		return _session
   }
 
+  getUserType() {
+    return _userType
+  }
+
   destroySession() {
-    _session = undefined
+    _session = undefined;
+    _userType = undefined;
   }
 }
 

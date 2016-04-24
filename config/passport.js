@@ -1,6 +1,8 @@
-var passport = require('passport'),
-LocalStrategy = require('passport-local').Strategy,
-FacebookStrategy = require('passport-facebook').Strategy;
+var /*async = require('async'),*/
+    _ = require('lodash'),
+    passport = require('passport'),
+    LocalStrategy = require('passport-local').Strategy,
+    FacebookStrategy = require('passport-facebook').Strategy;
 
 
 var FACEBOOK_APP_ID = "430365700492582",
@@ -21,9 +23,10 @@ passport.deserializeUser(function (id, done) {
 
 passport.use(new LocalStrategy({
     usernameField: 'email',
-    passwordField: 'password'
+    passwordField: 'password',
+    passReqToCallback: true
   },
-  function (email, password, done) {
+  function (req, email, password, done) {
 
   	Usuario.findByEmail(email, function (err, user){
 			if (err) { return done(err); }
@@ -33,6 +36,7 @@ passport.use(new LocalStrategy({
 
       user.comparePassword(password, function (err, isMatch){
   			if (isMatch) {
+          req.session.userType = 'local';
   				return done(null, user, {
             message: 'Logged In Successfully'
           });
@@ -49,22 +53,60 @@ passport.use(new FacebookStrategy({
     clientID: FACEBOOK_APP_ID,
     clientSecret: FACEBOOK_APP_SECRET,
     callbackURL: FACEBOOK_CALLBACK_URL,
-    profileFields: ['id', 'displayName', 'name', 'email', 'gender', 'photos']
+    profileFields: ['id', 'displayName', 'name', 'email', 'gender', 'photos'],
+    passReqToCallback: true
   },
-  function (accessToken, refreshToken, profile, cb) {
+  function (req, accessToken, refreshToken, profile, cb) {
+
     Usuario.findByFBid(profile.id, function (err, user) {
-      if (err) {
-        console.error(err);
-        return cb(err)
+      if (err) return cb(err, null);
+
+      var emails = _.map(profile.emails, function (email, index){
+        return email.value
+      })
+
+      var photos = _.map(profile.photos, function (photo, index){
+        return photo.value
+      })
+
+      var facebook = {
+        id: profile.id,
+        token: accessToken,
+        emails: emails,
+        email: emails[0],
+        name: profile.name.givenName + ' ' + profile.name.familyName,
+        first_name: profile.name.givenName,
+        last_name: profile.name.familyName,
+        photo: photos[0]
       }
 
-      //Lo encontro
       if (user) {
-        return cb(null, user)
-      }
+        user.perfil_individual.facebook = facebook;
+        console.log('user found and saving ...', user);
+        return user.save(function (err, user) {
+          if (err) return cb(err, null);
 
-      //crea un nuevo usuario
-      console.log('se crea un nuevo usuario');
+          req.session.userType = 'fb';
+          return cb(null, user)
+
+        });
+      }else{
+        var newUser = new Usuario({
+          'perfil_individual.facebook': facebook
+        })
+
+        console.log('new fb user and saving ...', newUser);
+
+        return newUser.save(function (err, newUser) {
+          if (err) return cb(err, null);
+
+          req.session.userType = 'fb';
+          return cb(null, newUser)
+
+        });
+      }
+      
     })
+    
   }
 ))

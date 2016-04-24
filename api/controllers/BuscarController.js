@@ -9,7 +9,8 @@ module.exports = {
 	index: function (req, res) {
 
 		let state = {
-			session: req.user
+			session: req.user,
+			userType: req.session.userType
 		};
 
 		renderTo(res, '/buscar', state);

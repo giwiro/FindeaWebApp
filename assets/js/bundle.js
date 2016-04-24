@@ -101,10 +101,11 @@ var App = function (_React$Component) {
 						muiTheme: _react.PropTypes.object.isRequired
 				};
 
-				_SessionStore2.default.init(_this.props.route.session);
+				_SessionStore2.default.init(_this.props.route.session, _this.props.route.userType);
 
 				_this.state = {
-						session: _SessionStore2.default.getSession()
+						session: _SessionStore2.default.getSession(),
+						userType: _SessionStore2.default.getUserType()
 				};
 
 				_this._onChange = _this._onChange.bind(_this);
@@ -120,9 +121,11 @@ var App = function (_React$Component) {
 				key: '_onChange',
 				value: function _onChange() {
 						var session = _SessionStore2.default.getSession();
+						var userType = _SessionStore2.default.getUserType();
 
 						this.setState({
-								session: session
+								session: session,
+								userType: userType
 						});
 				}
 		}, {
@@ -148,7 +151,7 @@ var App = function (_React$Component) {
 						return _react2.default.createElement(
 								'div',
 								null,
-								_react2.default.createElement(_Nav2.default, { session: this.state.session, _goTo: this._goTo }),
+								_react2.default.createElement(_Nav2.default, { session: this.state.session, userType: this.state.userType, _goTo: this._goTo }),
 								this.props.children
 						);
 				}
@@ -965,10 +968,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 module.exports = function (params) {
 
 	var session = params.session;
+	var userType = params.userType;
 
 	return _react2.default.createElement(
 		_reactRouter.Route,
-		{ path: '/', component: _App2.default, session: session },
+		{ path: '/', component: _App2.default, session: session, userType: userType },
 		_react2.default.createElement(_reactRouter.IndexRoute, { component: _MainPage2.default }),
 		_react2.default.createElement(_reactRouter.Route, { path: 'login', component: _LoginPage2.default }),
 		_react2.default.createElement(_reactRouter.Route, { path: 'buscar', component: _BuscarPage2.default })
@@ -1067,6 +1071,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 // data storage
 var _session = undefined;
+var _userType = undefined;
 
 var SessionStore = function (_BaseStore) {
   _inherits(SessionStore, _BaseStore);
@@ -1079,9 +1084,10 @@ var SessionStore = function (_BaseStore) {
 
   _createClass(SessionStore, [{
     key: 'init',
-    value: function init(session) {
+    value: function init(session, userType) {
       if (!session) return false;
       _session = session;
+      _userType = userType;
     }
   }, {
     key: 'getSession',
@@ -1089,9 +1095,15 @@ var SessionStore = function (_BaseStore) {
       return _session;
     }
   }, {
+    key: 'getUserType',
+    value: function getUserType() {
+      return _userType;
+    }
+  }, {
     key: 'destroySession',
     value: function destroySession() {
       _session = undefined;
+      _userType = undefined;
     }
   }]);
 

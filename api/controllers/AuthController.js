@@ -12,7 +12,8 @@ module.exports = {
 	index : function (req, res) {
 		//renderTo
 		let state = {
-			session: req.user
+			session: req.user,
+			userType: req.session.userType
 		};
 
 		renderTo(res, '/login', state);
@@ -20,7 +21,9 @@ module.exports = {
 
 	logout: function(req, res) {
 	  req.logout();
-  	res.redirect('/?has_logged_out=1');
+	 	req.session.destroy(function (err) {
+	 		res.redirect('/?has_logged_out=1')
+	 	});
   },
 
 
@@ -55,20 +58,7 @@ module.exports = {
         'public_profile',
         'email'
       ]
-		}/*, function (err, user) {
-			console.log('fb auth', user);
-
-			if ((err) || (!user)) {
-				return res.redirect('/login?error=fb');
-			}
-
-			req.logIn(user, function (err) {
-				if (err) res.send(err);
-
-				return res.redirect('/')
-			});
-
-		}*/)(req, res, next)
+		})(req, res, next)
 	},
 
 	facebookCallback: function (req, res, next) {
