@@ -55,7 +55,7 @@ module.exports = {
         'public_profile',
         'email'
       ]
-		}, function (err, user) {
+		}/*, function (err, user) {
 			console.log('fb auth', user);
 
 			if ((err) || (!user)) {
@@ -68,7 +68,7 @@ module.exports = {
 				return res.redirect('/')
 			});
 
-		})(req, res, next)
+		}*/)(req, res, next)
 	},
 
 	facebookCallback: function (req, res, next) {
