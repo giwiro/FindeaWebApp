@@ -35,7 +35,10 @@ module.exports.routes = {
   /*'/home': 'HomeController.home'*/
   'get /login': 'AuthController.index',
   'get /logout': 'AuthController.logout',
+
   'post /login': 'AuthController.localStrategy',
+  'get /facebook': 'AuthController.facebookStrategy',
+  'get /login/facebook/callback': 'AuthController.facebookCallback',
 
 
   'get /buscar': 'BuscarController.index' 

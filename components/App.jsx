@@ -41,6 +41,9 @@ const lightMuiTheme = getMuiTheme({
 	  toolbar: {
 	  	backgroundColor: 'rgb(32,78,87)',
 	  	height: '64px'
+	  },
+	  textField: {
+	  	hintColor: 'rgba(0,0,0,.55)'
 	  }
 	},
 	{

@@ -93,6 +93,12 @@ module.exports = {
     	return this.findOne({'perfil_individual.email' : email}, cb);
     })
 
+    //Find by FB id
+
+    newSchema.static('findByFBid', function (fbid, cb) {
+      return this.findOne({'perfil_individual.facebook.id' : fbid}, cb);
+    })
+
     // Or we might want to define an instance method:
     /*newSchema.method('meow', function () {
       console.log('meeeeeoooooooooooow');
