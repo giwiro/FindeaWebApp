@@ -194,7 +194,7 @@ export default class LoginPage extends React.Component {
               label="Ingresar con Facebook" 
               type="button" />
 
-            <p style={helperSubtitle}>Si aún no tiene una cuenta puedes registrarte <Link to="/registro">aquí</Link></p>
+            <p style={helperSubtitle}>Si aún no tiene una cuenta puedes registrarte <Link to="/usuario/registro">aquí</Link></p>
           </Card>
         
       </Paper>
