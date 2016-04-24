@@ -3,6 +3,7 @@ import {RouteHandler, Route, IndexRoute} from 'react-router'
 import MainPage from './pages/MainPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import BuscarPage from './pages/BuscarPage.jsx'
+import VerEspacio from './pages/VerEspacio.jsx'
 import App from './App.jsx'
 import {merge} from 'lodash'
 
@@ -24,6 +25,7 @@ module.exports = (params) => {
 	  	<IndexRoute component={MainPage}/>
 	  	<Route path="login" component={LoginPage} />
 	  	<Route path="buscar" component={BuscarPage} espaciosBusqueda={espaciosBusqueda} usos={usos} />
+	  	<Route path="/espacio/:id" component={VerEspacio} />
 	  </Route>
 	)
 }
