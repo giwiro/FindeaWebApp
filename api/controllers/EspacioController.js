@@ -14,7 +14,22 @@ module.exports = {
 
 		const idEspacio = req.param('id');
 
-		console.log('idEspacio', idEspacio);
+		if (!idEspacio) return res.redirect('/buscar')
+
+		Espacio.findById(idEspacio, function (err, espacio) {
+			if (err) return res.redirect('/buscar')
+
+			state.verEspacio = espacio;
+			return renderTo(res, '/espacio/' + idEspacio, state);
+		})
+	},
+
+	buscarEspacio: function (req, res) {
+		const idEspacio = req.param('id');
+		Espacio.findById(idEspacio, function (err, espacio) {
+			if (err) return res.redirect('/buscar')
+			return res.json(espacio);
+		})
 	}
 };
 

@@ -7,7 +7,9 @@ export default {
   // Each time you add an action, add it here... They should be past-tense
   ActionTypes: keyMirror({
     SESSION_DESTROYED: null,
-    PLACE_SEARCHED: null
+    PLACES_SEARCHED: null,
+    VIEW_PLACE_SEARCHED: null
+
   }),
 
   ActionSources: keyMirror({

@@ -45,7 +45,8 @@ module.exports.routes = {
   'post /buscar': 'BuscarController.buscar',
 
 
-  'get /espacio/:id': 'EspacioController.verEspacio'
+  'get /espacio/:id': 'EspacioController.verEspacio',
+  'post /buscarEspacio/:id': 'EspacioController.buscarEspacio'
 
   /***************************************************************************
   *                                                                          *
