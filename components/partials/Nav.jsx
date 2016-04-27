@@ -20,7 +20,7 @@ const burgerStyle = {
 const wrapperStyle = {
   position: 'fixed',
   width: '100%',
-  zIndex: '9999'
+  zIndex: '10'
 }
 
 export default class Nav extends React.Component{
