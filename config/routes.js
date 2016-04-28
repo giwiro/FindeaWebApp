@@ -32,6 +32,7 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
   '/': 'HomeController.index',
+  'post /subscribe' : 'MailController.sendSubscribe',
   /*'/home': 'HomeController.home'*/
   'get /login': 'AuthController.index',
   'get /logout': 'AuthController.logout',

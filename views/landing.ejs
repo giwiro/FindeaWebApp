@@ -9,13 +9,13 @@
 
       
 
-	<link rel="stylesheet" href="/css/landing/grid.css">
-	<link rel="stylesheet" href="/css/landing/style.css">
+	<link rel="stylesheet" href="/styles/landing/grid.css">
+	<link rel="stylesheet" href="/styles/landing/style.css">
 
       
 
-	<link rel="stylesheet" href="/css/landing/mailform.css"/>
-	<link rel="stylesheet" href="/css/landing/jquery.fancybox.css"/>
+	<link rel="stylesheet" href="/styles/landing/mailform.css"/>
+	<link rel="stylesheet" href="/styles/landing/jquery.fancybox.css"/>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.1.2/css/material-design-iconic-font.min.css">
 
 	<script src="/js/landing/jquery.js"></script>
@@ -124,25 +124,22 @@
               
               <ul class="nav-wrap">
                   <li><a class="registro_espacio" href="/espacio/registro">Registra tu espacio</a></li>
-                  {?session}
+                  <% if (session) { %>
                     <li>
                       <div class="wrapper_img_usuario small"aria-hidden="false">
-                        <img src="{?session.perfil_individual.foto}
-                                    {session.perfil_individual.foto}
-                                  {:else}
-                                    {?session.perfil_individual.facebook}
-                                      http://graph.facebook.com/v2.5/{session.perfil_individual.facebook.id}/picture?width=100&height=100
-                                    {:else}
-                                      /img/defaultAvatar.png
-                                    {/session.perfil_individual.facebook}
-                                  {/session.perfil_individual.foto}" alt="" />
+                        <% if (userType == 'fb') { %>
+                          <img src="<%= session.perfil_individual.facebook.photo %>" />
+                        <% }else if (session.perfil_individual.foto) { %>
+                          <img src="<%= session.perfil_individual.foto %>" />
+                        <% }else{%>
+                          <img src="/images/defaultAvatar.png" />
+                        <% } %>
                       </div>
                     </li>
-                  {:else}
-
+                  <% }else{ %>
                     <li><a href="/usuario/registro">Registro</a></li>
                     <li><a href="/login">Login</a></li>
-                  {/session}
+                  <% } %>
                 
               </ul>
             </div>
@@ -173,9 +170,11 @@
                       <option value="3">My Settings</option>
                       <option value="4">Logout</option> -->
                       <option disabled selected> Quiero usar el espacio para </option>
-                      {#usos}
-                            <option value="{nombre}">{nombre}</option>
-                      {/usos}
+                      <% if (usos) { %>
+                        <% usos.forEach(function (uso){ %>
+                          <option value="<%= uso.nombre %>"><%= uso.nombre %></option>
+                        <% }); %>
+                      <% } %>
                 </select>
                 <!-- <input type="text" id="datepicker" class="landing-input fecha" required="required" placeholder="Fecha" /> -->
                 <input id="direccion" type="text" name="direccion" class="landing-input direccion" required="required" placeholder="¿ En donde buscar ?" />

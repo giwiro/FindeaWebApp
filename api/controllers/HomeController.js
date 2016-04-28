@@ -10,27 +10,28 @@
 module.exports = {
 	index : function (req, res) {
 
-		let state = {
-			session: req.user,
-			userType: req.session.userType
-		};
+		Uso.getAll(function (err, usos) {
+			let state = {
+				session: req.user,
+				userType: req.session.userType,
+				usos: []
+			}
+			if (!err) {
+				state.usos = usos
+			}
+			return res.view('landing', state)
+			
+		})
+
+		
+
+		
 
 		//renderTo(res, '/', state);
 
-		res.view('landing');
+		//return res.view('landing', state);
 		
-	},
-
-	/*'home' : function (req, res) {
-
-		let state = {
-			session: {
-				name: 'Gi Wah'
-			}
-		};
-
-		renderTo(res, '/home', state);
-	}*/
+	}
 
 };
 

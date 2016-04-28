@@ -37,6 +37,7 @@
     "jquery": "^2.2.3",
     "keymirror": "^0.1.1",
     "lodash": "^4.11.1",
+    "mailgun-js": "^0.7.10",
     "material-ui": "0.15.0-alpha.2",
     "mongoose-cache": "^0.1.4",
     "node-geocoder": "^3.9.1",
