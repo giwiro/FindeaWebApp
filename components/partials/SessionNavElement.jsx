@@ -37,26 +37,6 @@ export default class SessionNavElement extends React.Component{
     this.state = {
       open: false
     };
-    this.getFoto = this.getFoto.bind(this)
-    this.getName = this.getName.bind(this)
-  }
-
-  getName() {
-    const userType = this.props.userType
-    if (userType == 'fb') {
-      return this.props.session.perfil_individual.facebook.first_name
-    }else{
-      return this.props.session.perfil_individual.nombre
-    }
-  }
-
-  getFoto() {
-    const userType = this.props.userType
-    if (userType == 'fb') {
-      return this.props.session.perfil_individual.facebook.photo
-    }else{
-      return this.props.session.perfil_individual.foto
-    }
   }
 
   logout(){
@@ -78,7 +58,7 @@ export default class SessionNavElement extends React.Component{
             <SearchIcon className="white" />
           </IconButton>
         </Link>
-        <Link to="/afiliacion" >
+        <Link to="/espacio/registro" >
           <RaisedButton className="navButton" label="Quiero registrar mi espacio" primary={true} zDepth={0} />
         </Link>
       </div>
@@ -93,13 +73,13 @@ export default class SessionNavElement extends React.Component{
       console.log('session', session)
       content = (
         <div className="inline_element vertical_middle">
-          <Avatar style={avatarStyle} src={this.getFoto()} />
+          <Avatar style={avatarStyle} src={this.props.getFoto()} />
           
           <IconMenu
             className="vertical_middle"
             iconButtonElement={
               <span>
-                <span className="white pointer">{this.getName()}</span>
+                <span className="white pointer">{this.props.getName()}</span>
                 <IconButton style={dropDownStyle} className="vertical_middle">
                   {/*<MoreVertIcon className="white" />*/}
                   <ArrowDropIcon className="white" />
