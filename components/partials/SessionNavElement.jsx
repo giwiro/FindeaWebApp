@@ -2,15 +2,33 @@
 
 import React from 'react'
 import {Link} from 'react-router'
-import {RaisedButton, IconButton, ToolbarSeparator} from 'material-ui';
+import {
+  RaisedButton, 
+  IconButton, 
+  ToolbarSeparator,
+  Avatar,
+  IconMenu,
+  MenuItem,
+  Divider} from 'material-ui';
 import SessionActionCreator from '../actions/SessionActionCreator'
+
 import SearchIcon from 'material-ui/lib/svg-icons/action/search'
+import AccountIcon from 'material-ui/lib/svg-icons/action/account-circle'
+import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert'
+import ArrowDropIcon from 'material-ui/lib/svg-icons/navigation/arrow-drop-down'
+import PowerIcon from 'material-ui/lib/svg-icons/action/power-settings-new'
+import ListIcon from 'material-ui/lib/svg-icons/action/list'
+
 
 const warpperStyle = {
   paddingTop: '7px'
 }
-const searchIconStyle = {
-  verticalAlign: 'middle'
+const avatarStyle = {
+  verticalAlign: 'middle',
+  margin: '0 12px 0 10px'
+}
+const dropDownStyle = {
+  paddingLeft: '0px'
 }
 export default class SessionNavElement extends React.Component{
 
@@ -19,6 +37,26 @@ export default class SessionNavElement extends React.Component{
     this.state = {
       open: false
     };
+    this.getFoto = this.getFoto.bind(this)
+    this.getName = this.getName.bind(this)
+  }
+
+  getName() {
+    const userType = this.props.userType
+    if (userType == 'fb') {
+      return this.props.session.perfil_individual.facebook.first_name
+    }else{
+      return this.props.session.perfil_individual.nombre
+    }
+  }
+
+  getFoto() {
+    const userType = this.props.userType
+    if (userType == 'fb') {
+      return this.props.session.perfil_individual.facebook.photo
+    }else{
+      return this.props.session.perfil_individual.foto
+    }
   }
 
   logout(){
@@ -34,11 +72,16 @@ export default class SessionNavElement extends React.Component{
   	const session = this.props.session
     let content;
     let linkButtons = (
-      <Link to="/buscar" >
-        <IconButton style={searchIconStyle}>
-          <SearchIcon className="white" />
-        </IconButton>
-      </Link>
+      <div className="link_buttons_holder">
+        <Link to="/buscar" >
+          <IconButton className="vertical_middle">
+            <SearchIcon className="white" />
+          </IconButton>
+        </Link>
+        <Link to="/afiliacion" >
+          <RaisedButton className="navButton" label="Quiero registrar mi espacio" primary={true} zDepth={0} />
+        </Link>
+      </div>
     )
 
     if (!session) {
@@ -47,10 +90,32 @@ export default class SessionNavElement extends React.Component{
           <RaisedButton className="navButton" label="Iniciar sesión" primary={true} zDepth={0} />
         </Link>)
     }else{
+      console.log('session', session)
       content = (
-        <div>
-          {session.name}
-          <RaisedButton className="navButton" label="logout" secondary={false} zDepth={0} onTouchTap={this.logout}/>
+        <div className="inline_element vertical_middle">
+          <Avatar style={avatarStyle} src={this.getFoto()} />
+          
+          <IconMenu
+            className="vertical_middle"
+            iconButtonElement={
+              <span>
+                <span className="white pointer">{this.getName()}</span>
+                <IconButton style={dropDownStyle} className="vertical_middle">
+                  {/*<MoreVertIcon className="white" />*/}
+                  <ArrowDropIcon className="white" />
+                </IconButton>
+              </span>}
+            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+            targetOrigin={{horizontal: 'right', vertical: 'top'}} >
+
+            {/*<MenuItem primaryText="Refresh" />*/}
+            
+            <MenuItem primaryText="Perfil" containerElement={<Link to="/usuario/perfil" />} leftIcon={<AccountIcon />} />
+            <MenuItem primaryText="Mis espacios" containerElement={<Link to="/usuario/espacios" />} leftIcon={<ListIcon />} />
+            <Divider />
+            <MenuItem primaryText="Cerrar sesión" onTouchTap={this.logout} leftIcon={<PowerIcon />} />
+          </IconMenu>
+          {/*<RaisedButton className="navButton" label="logout" secondary={false} zDepth={0} onTouchTap={this.logout}/>*/}
         </div>
       )
     }
@@ -58,6 +123,8 @@ export default class SessionNavElement extends React.Component{
     return (
       <div className="hidden-xs hidden-sm" style={warpperStyle}>
         {linkButtons}
+        <div className="toolbar_separator inline_element" />
+        {/*<ToolbarSeparator className="toolbar_separator" />*/}
         {content}
       </div>
     )

@@ -8,7 +8,7 @@ import {
   FlatButton, 
   LeftNav, 
   Toolbar, 
-  ToolbarGroup, 
+  ToolbarGroup,
   IconButton} from 'material-ui';
 import NavMenu from 'material-ui/lib/svg-icons/navigation/menu'
 
@@ -20,7 +20,7 @@ const burgerStyle = {
 const wrapperStyle = {
   position: 'fixed',
   width: '100%',
-  zIndex: '9999'
+  zIndex: '10'
 }
 
 export default class Nav extends React.Component{
@@ -42,6 +42,7 @@ export default class Nav extends React.Component{
   render() {
     //console.log('handleToggle', this.handleToggle);
     const session = this.props.session
+    const userType = this.props.userType
     
     return (
         <div style={wrapperStyle}>
@@ -53,7 +54,11 @@ export default class Nav extends React.Component{
               <img src="/images/whiteLogoSmall.png" className="logo" />
             </ToolbarGroup>
             <ToolbarGroup >
-              <SessionNavElement class="hidden-xs hidden-sm" session={session}/>
+              <SessionNavElement 
+                class="hidden-xs hidden-sm" 
+                _goTo={this.props._goTo}
+                session={session} 
+                userType={userType} />
             </ToolbarGroup>
           </Toolbar>
           <LeftNav 
