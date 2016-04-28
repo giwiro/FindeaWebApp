@@ -15,9 +15,9 @@ module.exports = function(grunt) {
   grunt.config.set('browserify', {
     options: {
       //external: ['react', 'react-router', 'material-ui'],
-      transform: [
+      transform: [ 'browserify-shim',
         ['babelify', { 
-          presets: ["react", "es2015"] 
+          presets: ["react", "es2015", "stage-0", "stage-2"] 
         }]
       ]/*,
       harmony: true*/

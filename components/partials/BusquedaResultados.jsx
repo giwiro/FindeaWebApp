@@ -27,7 +27,7 @@ export default class BusquedaResultados extends React.Component{
       const espacio = this.props.espacios[i];
       /*console.log('espacio.location', espacio.location)
       console.log('espacio.fotos', espacio.fotos);*/
-      const linkTo = 'espacio/' + espacio._id;
+      const linkTo = '/espacio/' + espacio._id;
       const linkFoto = 
         (espacio.fotos[0] ? "//res.cloudinary.com/dh865bqe1/w_1200,h_700,c_fill/" + espacio.fotos[0].public_id : undefined );
       let moneda;
@@ -52,7 +52,7 @@ export default class BusquedaResultados extends React.Component{
                   className="img-responsive-height" alt="" />
               </div>
             </Link>
-            <Link to={espacio._id} className="box_price" >
+            <Link to={linkTo} className="box_price" >
               {precio}
             </Link>
           </div>

@@ -67,7 +67,8 @@
 }
 
 .place_box {
-  display: inline-block;
+  display: block;
+  width: 100%;
   vertical-align: top;
   position: relative;
   background-color: #ddd;
@@ -80,12 +81,14 @@
   display: inline-block;
 
 
-  @media (min-width: @screen-xs) {
+  /*@media (min-width: @screen-xs) {
     width: 100%;
-  }
+    display: block;
+  }*/
 
   @media (min-width: @screen-sm) {
     width: 48%;
+    display: inline-block;
   }
 
   .panel-image{

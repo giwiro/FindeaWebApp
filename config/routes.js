@@ -42,7 +42,11 @@ module.exports.routes = {
 
 
   'get /buscar': 'BuscarController.index',
-  'post /buscar': 'BuscarController.buscar'
+  'post /buscar': 'BuscarController.buscar',
+
+
+  'get /espacio/:id': 'EspacioController.verEspacio',
+  'post /buscarEspacio/:id': 'EspacioController.buscarEspacio'
 
   /***************************************************************************
   *                                                                          *
